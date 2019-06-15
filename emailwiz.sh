@@ -16,7 +16,7 @@
 # On installation of Postfix, select "Internet Site" and put in TLD (without before it mail.)
 
 echo "Installing programs..."
-apt install postfix dovecot-imapd opendkim spamassassin spamc
+apt install postfix dovecot-imapd opendkim opendkim-tools spamassassin spamc
 domain="$(cat /etc/mailname)"
 subdom="mail"
 maildomain="$subdom.$domain"
@@ -34,6 +34,9 @@ postconf -e "smtpd_tls_key_file=/etc/letsencrypt/live/$maildomain/privkey.pem"
 postconf -e "smtpd_tls_cert_file=/etc/letsencrypt/live/$maildomain/fullchain.pem"
 postconf -e "smtpd_use_tls = yes"
 postconf -e "smtpd_tls_auth_only = yes"
+
+# Encrypt outgoing email
+postconf -e "smtp_tls_security_level = may"
 
 # Here we tell Postfix to look to Dovecot for authenticating users/passwords.
 # Dovecot will be putting an authentication socket in /var/spool/postfix/private/auth
